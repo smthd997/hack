@@ -1,1 +1,3 @@
-daniel is a pussy
+### README
+
+## HackMIT team
