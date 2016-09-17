@@ -11,10 +11,9 @@
         function statusChangeCallback(response) {
             console.log(response);
             if (response.status === 'connected') {
-                FB.api('/me', function(response) {
-                    console.log(response);
-                    console.log('Successful login for: ' + response.name);
-                });
+                //connected, redirect to main page
+                window.location = "/";
+                onLogIn();
             } else if (response.status === 'not_authorized') {
                 console.log('Please log into this app.')
             } else {
@@ -56,5 +55,13 @@
 
     <div class="fb-login-button" data-max-rows="1" data-size="medium" data-show-faces="false" data-auto-logout-link="false"></div>
 
+    <script>
+        function onLogIn() {
+            FB.api('/me', function(response) {
+                console.log(response);
+                console.log('Successful login for: ' + response.name);
+            });
+        }
+    </script>
 </body>
 </html>
