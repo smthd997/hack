@@ -66,14 +66,20 @@
 			$('#fb-status').text('Logged in as '+response.name);
 		});
 		var data = {}
-		FB.api('/me/photos', function(response) {
-			console.log(response);
-			data.photos = response.data;
+		FB.api('/me/photos?fields=id,name_tags,picture,name', function(response) {
+			for(photo in response.data){
+				FB.api('/'+response.data[photo].id.toString()+'/tags', function(response){
+					console.log(response);
+				});
+			}
 		});
 		FB.api('/me/videos', function(response){
-			console.log(response);
-			data.videos = response.data;
+
 		});
+		FB.api('/me/feed', function(response){
+			console.log(response);
+			data.feed = response.data;
+		})
 
 	}
 </script>
