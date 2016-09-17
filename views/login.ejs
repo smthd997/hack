@@ -10,7 +10,7 @@
         function statusChangeCallback(response) {
             if (response.status === 'connected') {
                 //connected, redirect to main page
-                window.location = "/";
+                //window.location = "/";
                 onLogIn();
             } else if (response.status === 'not_authorized') {
                 console.log('Please log into this app.')
