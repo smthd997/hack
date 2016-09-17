@@ -7,10 +7,9 @@
     <script src="/javascripts/d3/d3.geom.js" type="text/javascript"></script>
     <script src="/javascripts/d3/d3.layout.js" type="text/javascript"></script>
     <script src="/javascripts/CodeFlower.js" type="text/javascript"></script>
-	<script src="/javascripts/bootstrap.min.js" type="text/javascript"></script>
 	<script src="/javascripts/graph.js" type="text/javascript"></script>
-	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+	<link rel='stylesheet' href='/stylesheets/shared.css' />
+	<link rel='stylesheet' href='/stylesheets/index.css' />
 </head>
 
 <body>
@@ -119,6 +118,9 @@
 		FB.api('/me?fields=id,name,picture', function(resp) {
 			console.log('Successful login for: ' + resp.name);
 			var uid = "u" + resp.id;
+			console.log(resp);
+			$("#fb-photo").attr("src", resp.picture.data.url);
+			$("#logged-in-user").text(resp.name);
 			vertices[uid] = { content: "<img src=\"" + resp.picture + "\" />", message: "me", id: uid, type: "user" };
 		});
 
@@ -131,19 +133,26 @@
 	}
 </script>
 
-<nav class="navbar navbar-default navbar-fixed-top">
-	<div class="container">
-		<h1 class="pull-left"><%= title %></h1>
-		<div class="pull-right navbar-brand" style="padding-left: 50px;"><img id="fb-photo"></div>
-		<h3 class="pull-right" id="fb-status"></h3>
+
+<div id="navbar" class="container">
+	<div id="navbar-content" class="content">
+		<a href="/"><h1>webb</h1></a>
 	</div>
-</nav>
-<div class="outer">
-	<div class="inner">
-		Welcome to <%= title %>!
+	<div id="navbar-right">
+		<p id="logged-in-user"></p>
+		<div id="image-container">
+			<img id="fb-photo">
+		</div>
 	</div>
 </div>
-<div id="graph"></div>
+
+<div class="body">
+	<div class="container">
+		<div class="content">
+			<div id="graph"></div>
+		</div>
+	</div>
+</div>
 
 </body>
 </html>
