@@ -3,7 +3,7 @@
 <head>
     <title><%= title %></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/shared.css' />
 </head>
 <body>
     <script>
@@ -49,23 +49,95 @@
         }(document, 'script', 'facebook-jssdk'));
     </script>
 
-    <h1><%= title %></h1>
+    <div id="navbar" class="container">
+        <div id="navbar-content" class="content">
+            <a href="/"><h1>webb</h1></a>
+        </div>
+        <div id="navbar-right">
 
-    <!--<div class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false"></div>-->
-    <fb:login-button scope="public_profile,user_photos,user_photos,user_posts,user_likes,user_status,user_relationships" onlogin="checkLoginState();"></fb:login-button>
+        </div>
+    </div>
+
+    <div class="body">
+        <div class="container">
+            <div class="content">
+
+                <h2>Welcome. Please log in with your Facebook account.</h2>
+                <!--<div class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false"></div>-->
+                <fb:login-button scope="public_profile,user_photos,user_photos,user_posts,user_likes,user_status,user_relationships" data-size="xlarge" onlogin="checkLoginState();"></fb:login-button>
+
+            </div>
+        </div>
+    </div>
     <script>
+        meId = "";
+        vertices = { };
+        edges = [];
+
+        function addUser(user) {
+            var uid = "u" + user.id;
+            if (uid == meId)
+                return "me";
+            if(vertices[uid] == undefined || vertices[uid] == null) { //user not in vertices
+                vertices[uid] = { content: user.name, message: user.name, id: uid, type: "user" };
+            }
+            return uid;
+        }
+
+        function fetch(isPhotos) {
+            FB.api(isPhotos ? '/me?fields=photos{id, name, picture, tags, likes, comments}' : '/me?fields=feed{id, message, type, with_tags, likes, comments}', function(resp) {
+                var data = isPhotos ? resp.photos.data : resp.feed.data;
+                if(!isPhotos)
+                    console.log(data);
+                for (var i = 0; i < data.length; i++) {
+                    var post = data[i];
+                    if(!isPhotos && post.type != "status")
+                        continue;
+                    var pid = "p" + data[i].id;
+
+                    if (vertices[pid] == undefined || vertices[pid] == null) { //photo not in vertices
+                        if (isPhotos)
+                            vertices[pid] = { content: "<img src=\"" + post.picture + "\" />", message: post.name, id: pid, type: "photo" };
+                        else
+                            vertices[pid] = { content: post.message, message: post.message, id: pid, type: "status" };
+                        edges.push({source: "me", target: pid, type: "in_post"});
+                    }
+
+                    //create vertices from tags
+                    var tags = isPhotos ? post.tags : post.with_tags;
+                    for (var j = 0; j < (tags == undefined ? 0 : tags.data.length); j++) {
+                        var uid = addUser(tags.data[j]);
+                        edges.push({source: uid, target: pid, type: "in_post"});
+                    }
+
+                    //create vertices from likes
+                    for (var j = 0; j < (post.likes == undefined ? 0 : post.likes.data.length); j++) {
+                        var uid = addUser(post.likes.data[j]);
+                        edges.push({source: uid, target: pid, type: "like"});
+                    }
+
+                    //create vertices from comments
+                    for (var j = 0; j < (post.comments == undefined ? 0 : post.comments.data.length); j++) {
+                        var uid = addUser(post.comments.data[j].from);
+                        edges.push({source: uid, target: pid, type: "comment"});
+                    }
+                }
+            });
+        }
+
         function onLogIn() {
-            FB.api('/me?fields=id,name,picture', function(response) {
-                console.log('Successful login for: ' + response.name);
-                console.log(response);
+            FB.api('/me?fields=id,name,picture', function(resp) {
+                console.log('Successful login for: ' + resp.name);
+                var uid = "u" + resp.id;
+                vertices[uid] = { content: "<img src=\"" + resp.picture + "\" />", message: "me", id: uid };
             });
-            FB.api('/me/photos?fields=id,name_tags,picture,name', function(response) {
-                console.log(response.data);
-                console.log(response.data[0].id);
-                FB.api('/' + response.data[0].id + '/tags', function(response) {
-                    console.log(response);
-                });
+
+            FB.api('/1031068623608604/likes', function(resp) {
+               console.log(resp);
             });
+
+            fetch(true);
+            fetch(false);
         }
     </script>
 </body>

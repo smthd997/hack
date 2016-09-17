@@ -18,7 +18,7 @@
 <script>
 	function statusChangeCallback(response) {
 		if (response.status === 'connected') {
-			onLoggedIn();
+			onLogIn();
 		} else if (response.status === 'not_authorized') {
 			console.log('Please log into this app.')
 			window.location = "/login"
@@ -59,36 +59,75 @@
 </script>
 
 <script>
-	function onLoggedIn() {
-		FB.api('/me?fields=id,name,picture', function(response) {
-			console.log(response);
-			$('#fb-photo').attr('src', response.picture.data.url);
-			$('#fb-status').text('Logged in as '+response.name);
-		});
-		var vertices = {};
-		var edges = [];
-		FB.api('/me/photos?fields=id,name_tags,picture', function(response) {
-			for(photo in response.data){
-				FB.api('/'+response.data[photo].id.toString()+'/tags', function(response){
-//					console.log(response);
-				});
-			}
-		});
-		FB.api('/me?fields=feed{with_tags,id,message,type,likes,comments}', function(response){
-			console.log(response);
-			for(var i=0; i<response.feed.data.length; i++){
-				// Only take statuses
-				if(response.feed.data[i].type == "status"){
-					var fid = 'f'+response.feed.data[i].id.toString();
-					if(vertices[fid] == undefined || vertices[fid] == null){
-						var content = {content: response.feed.data[i].message};
-						vertices[fid] = content;
-						edges.append({ids: ["me", fid], type: 's'})
-					}
+	meId = "";
+	vertices = { };
+	edges = [];
+
+	function addUser(user) {
+		var uid = "u" + user.id;
+		if (uid == meId)
+			return "me";
+		if(vertices[uid] == undefined || vertices[uid] == null) { //user not in vertices
+			vertices[uid] = { content: user.name, message: user.name, id: uid, type: "user" };
+		}
+		return uid;
+	}
+
+	function fetch(isPhotos) {
+		FB.api(isPhotos ? '/me?fields=photos{id, name, picture, tags, likes, comments}' : '/me?fields=feed{id, message, type, with_tags, likes, comments}', function(resp) {
+			var data = isPhotos ? resp.photos.data : resp.feed.data;
+			if(!isPhotos)
+				console.log(data);
+			for (var i = 0; i < data.length; i++) {
+				var post = data[i];
+				if(!isPhotos && post.type != "status")
+					continue;
+				var pid = "p" + data[i].id;
+
+				//add post to vertices
+				if (vertices[pid] == undefined || vertices[pid] == null) { //photo not in vertices
+					if (isPhotos)
+						vertices[pid] = { content: "<img src=\"" + post.picture + "\" />", message: post.name || "", id: pid, type: "photo", likes: (post.likes == undefined ? 0 : post.likes.data.length), comments: (post.comments == undefined ? 0 : post.comments.data.length)};
+					else
+						vertices[pid] = { content: post.message || "", message: post.message || "", id: pid, type: "status" };
+					edges.push({source: "me", target: pid, type: "in_post"});
+				}
+
+				//create vertices from tags
+				var tags = isPhotos ? post.tags : post.with_tags;
+				for (var j = 0; j < (tags == undefined ? 0 : tags.data.length); j++) {
+					var uid = addUser(tags.data[j]);
+					edges.push({source: uid, target: pid, type: "in_post"});
+				}
+
+				//create vertices from likes
+				for (var j = 0; j < (post.likes == undefined ? 0 : post.likes.data.length); j++) {
+					var uid = addUser(post.likes.data[j]);
+					edges.push({source: uid, target: pid, type: "like"});
+				}
+
+				//create vertices from comments
+				for (var j = 0; j < (post.comments == undefined ? 0 : post.comments.data.length); j++) {
+					var uid = addUser(post.comments.data[j].from);
+					edges.push({source: uid, target: pid, type: "comment"});
 				}
 			}
-		})
+		});
+	}
 
+	function onLogIn() {
+		FB.api('/me?fields=id,name,picture', function(resp) {
+			console.log('Successful login for: ' + resp.name);
+			var uid = "u" + resp.id;
+			vertices[uid] = { content: "<img src=\"" + resp.picture + "\" />", message: "me", id: uid, type: "user" };
+		});
+
+		FB.api('/1031068623608604/likes', function(resp) {
+			console.log(resp);
+		});
+
+		fetch(true);
+		fetch(false);
 	}
 </script>
 
