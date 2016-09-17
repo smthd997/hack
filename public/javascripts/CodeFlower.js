@@ -7,10 +7,12 @@ var CodeFlower = function(selector, w, h) {
     d3.select(selector).selectAll("svg").remove();
 
     console.log(d3.layout);
+    console.log(d3.select(selector));
 
     this.svg = d3.select(selector).append("svg:svg")
         .attr('width', w)
         .attr('height', h);
+    console.log(d3.select(selector));
 
     this.svg.append("svg:rect")
         .style("stroke", "#999")
