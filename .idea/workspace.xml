@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4bd5383e-74f5-4b2b-b659-511c1e89c203" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/views/login.js" afterPath="$PROJECT_DIR$/views/login.ejs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/views/login.ejs" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/views/login.js" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/index.js" afterPath="$PROJECT_DIR$/routes/index.js" />
     </list>
@@ -256,12 +257,12 @@
       <option name="presentableId" value="Default" />
       <updated>1474129362718</updated>
       <workItem from="1474129368645" duration="71000" />
-      <workItem from="1474130390935" duration="2833000" />
+      <workItem from="1474130390935" duration="2841000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2904000" />
+    <option name="totallyTimeSpent" value="2912000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="1440" height="873" extended-state="6" />
