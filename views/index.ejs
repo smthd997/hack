@@ -83,7 +83,7 @@
 					if(vertices[fid] == undefined || vertices[fid] == null){
 						var content = {content: response.feed.data[i].message};
 						vertices[fid] = content;
-						edges.append({ids: ["me", fid], type: 's'})
+						edges.push({ids: ["me", fid], type: 's'})
 					}
 				}
 			}
