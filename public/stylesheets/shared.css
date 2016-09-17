@@ -10,6 +10,7 @@ a, a:hover, a:visited, a:active {
 }
 h1 {
     color: #0c5096;
+    font-weight: bold !important;
 }
 h1, h2, p {
     margin: 0;
@@ -51,10 +52,9 @@ h1, h2, p {
 }
 #navbar-right {
     float:right;
-
 }
-#navbar-content * {
-
+#navbar-right * {
+    display: inline-block;
 }
 #navbar h1 {
     font-size: 60px;
