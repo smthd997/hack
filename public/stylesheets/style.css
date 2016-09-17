@@ -6,3 +6,12 @@ body {
 a {
   color: #00B7FF;
 }
+.outer{
+  width: 100%;
+  text-align: center;
+}
+
+.inner{
+  padding-top: 5%;
+  display: block;
+}
