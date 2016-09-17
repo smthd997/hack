@@ -9,5 +9,3 @@ router.get('/', function(req, res, next) {
 
 module.exports = router;
 
-var myFlower = new CodeFlower("#visualization", 300, 200);
-myflower.update(jsonData);
