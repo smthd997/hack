@@ -2,7 +2,6 @@
 <html>
 <head>
     <title><%= title %></title>
-    <script src="../public/scripts/graph.js" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
@@ -11,7 +10,7 @@
         function statusChangeCallback(response) {
             if (response.status === 'connected') {
                 //connected, redirect to main page
-                window.location = "/";
+                //window.location = "/";
                 onLogIn();
             } else if (response.status === 'not_authorized') {
                 console.log('Please log into this app.')
