@@ -51,11 +51,13 @@
 
     <h1><%= title %></h1>
 
-    <div class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false"></div>
+    <!--<div class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false"></div>-->
+    <fb:login-button scope="public_profile,user_photos,user_photos,user_posts,user_likes,user_status,user_relationships" onlogin="checkLoginState();"></fb:login-button>
     <script>
         function onLogIn() {
-            FB.api('/me', function(response) {
+            FB.api('/me?fields=id,name,picture', function(response) {
                 console.log('Successful login for: ' + response.name);
+                console.log(response);
             });
             FB.api('/me/photos', function(response) {
                 console.log(response);
