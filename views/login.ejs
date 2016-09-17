@@ -59,8 +59,12 @@
                 console.log('Successful login for: ' + response.name);
                 console.log(response);
             });
-            FB.api('/me/photos', function(response) {
-                console.log(response);
+            FB.api('/me/photos?fields=id,name_tags,picture,name', function(response) {
+                console.log(response.data);
+                console.log(response.data[0].id);
+                FB.api('/' + response.data[0].id + '/tags', function(response) {
+                    console.log(response);
+                });
             });
         }
     </script>
