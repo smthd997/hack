@@ -64,7 +64,13 @@
 			$('#fb-photo').attr('src', response.picture.data.url);
 			$('#fb-status').text('Logged in as '+response.name);
 		});
-		FB.api('/me/photos')
+		var data = {}
+		FB.api('/me/photos?type=uploaded', function(response) {
+			data.photos = response.data;
+		});
+		FB.api('/me/videos', function(response){
+			data.videos = response.data;
+		})
 	}
 </script>
 
