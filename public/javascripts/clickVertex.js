@@ -34,7 +34,6 @@ function clickVertex(id, edgeList, verticesDict){
             }
             ret.edgeCount = typeEdgeCount;
         });
-        console.log(ret.title);
     }else{
         ret.content = data.content;
         ret.title = data.message;

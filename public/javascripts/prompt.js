@@ -16,26 +16,32 @@ $(document).ready(function() {
     $("#no-button").click(function() {
        hidePrompt("no"); 
     });
-    $("circle").click(function(event){
-        console.log('here');
-        var data = clickVertex($(this).data('id'), edges, vertices);
-        showPrompt(data.title, data.content, false);
-    })
+    $("#remove-button").click(function() {
+        hidePrompt("yes");
+        var id = $("#info-text").text();
+        console.log(id);
+        var newData = deleteInfo(id, currentEdges, currentVertices);
+        currentEdges = newData.edges;
+        currentVertices = newData.vertices
+    });
 });
 
 var onHidePrompt;
 
-function showPrompt(content, caption, message, isConfirm) {
+function showPrompt(content, caption, message, isConfirm, id) {
     $("#popup-image").css("display", content == "" ? "none" : "block");
     $("#popup-image").attr("src", content);
     $("#header-text").empty().text(caption);
     $("#message-text").empty().html(message);
     if(isConfirm) {
         $("#yes-button, #no-button").addClass("invisible");
-        $("#okay-button").removeClass("invisible");
+        $("#okay-button, #remove-button").removeClass("invisible");
+        console.log(id);
+        $("#info-text").text(id);
+        console.log('set name')
     } else {
         $("#yes-button, #no-button").removeClass("invisible");
-        $("#okay-button").addClass("invisible");
+        $("#okay-button, #remove-button").addClass("invisible");
     }
     $("#dimmer").stop();
     $("#dimmer").fadeIn(300);
