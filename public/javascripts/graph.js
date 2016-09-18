@@ -35,6 +35,7 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
         .data(vertices)
         .enter().append("circle")
         .attr("r", function(d) { return d.id == meId ? 20 : d.type == "user" ? 5 : 10; })
+        .attr("data-id", function(d) { return d.id; })
         .call(d3.drag()
             .on("start", function(d) {
                 if (!d3.event.active)
@@ -51,8 +52,8 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
                     simulation.alphaTarget(0);
                 d.fx = null;
                 d.fy = null;
-            }))
-        .on("click", function(d) { return d; });
+            }));
+        //.append("img").attr("xlink:href", function(d) { return "@Url.Content(\"" + d.content + "\")"; });
 
     edge.append("title")
         .text(function(d) { return d.id; });
