@@ -1,149 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><%= title %></title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<script src="/javascripts/d3/d3.js" type="text/javascript"></script>
-	<script src="/javascripts/d3/d3.geom.js" type="text/javascript"></script>
-	<script src="/javascripts/d3/d3.layout.js" type="text/javascript"></script>
-	<script src="/javascripts/CodeFlower.js" type="text/javascript"></script>
+    <title><%= title %></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="/javascripts/d3/d3.js" type="text/javascript"></script>
+    <script src="/javascripts/d3/d3.geom.js" type="text/javascript"></script>
+    <script src="/javascripts/d3/d3.layout.js" type="text/javascript"></script>
+    <script src="/javascripts/CodeFlower.js" type="text/javascript"></script>
 	<script src="/javascripts/graph.js" type="text/javascript"></script>
 	<link rel='stylesheet' href='/stylesheets/shared.css' />
 	<link rel='stylesheet' href='/stylesheets/index.css' />
+    <script src="/javascripts/indexjs.js" type="text/javascript"></script>
+    <script src="/javascripts/facebook.js" type="text/javascript"></script>
+    <script src="/javascripts/graph.js" type="text/javascript"></script>
 </head>
 
 <body>
-<div id="fb-root"></div>
-<script>
-	function statusChangeCallback(response) {
-		if (response.status === 'connected') {
-			onLogIn();
-		} else if (response.status === 'not_authorized') {
-			console.log('Please log into this app.')
-			window.location = "/login"
-		} else {
-			console.log('Please log into Facebook.')
-			window.location = "/login"
-		}
-	}
-
-	function checkLoginState() {
-		FB.getLoginStatus(function(response) {
-			statusChangeCallback(response);
-		});
-	}
-
-	window.fbAsyncInit = function() {
-		FB.init({
-			appId      : '1059613384157964',
-			cookie     : true,  // enable cookies to allow the server to access
-								// the session
-			xfbml      : true,  // parse social plugins on this page
-			version    : 'v2.5' // use graph api version 2.5
-		});
-
-		FB.getLoginStatus(function(response) {
-			statusChangeCallback(response);
-		});
-	};
-
-	// Load the SDK asynchronously
-	(function(d, s, id) {
-		var js, fjs = d.getElementsByTagName(s)[0];
-		if (d.getElementById(id)) return;
-		js = d.createElement(s); js.id = id;
-		js.src = "//connect.facebook.net/en_US/sdk.js";
-		fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));
-</script>
-
-<script>
-	meId = "";
-	vertices = { };
-	edges = [];
-
-	function addUser(user) {
-		var uid = "u" + user.id;
-		if (uid == meId)
-			return "me";
-		if(vertices[uid] == undefined || vertices[uid] == null) { //user not in vertices
-			vertices[uid] = { content: user.name, message: user.name, id: uid, type: "user" };
-		}
-		return uid;
-	}
-
-	function fetch(isPhotos) {
-		FB.api(isPhotos ? '/me?fields=photos{id, name, picture, tags, likes, comments}' : '/me?fields=feed{id, message, type, with_tags, likes, comments}', function(resp) {
-			var data = isPhotos ? resp.photos.data : resp.feed.data;
-			if(!isPhotos)
-				console.log(data);
-			for (var i = 0; i < data.length; i++) {
-				var post = data[i];
-				if(!isPhotos && post.type != "status")
-					continue;
-				var pid = "p" + data[i].id;
-
-				//add post to vertices
-				if (vertices[pid] == undefined || vertices[pid] == null) { //photo not in vertices
-					if (isPhotos)
-						vertices[pid] = { content: "<img src=\"" + post.picture + "\" />", message: post.name || "", id: pid, type: "photo", likes: (post.likes == undefined ? 0 : post.likes.data.length), comments: (post.comments == undefined ? 0 : post.comments.data.length)};
-					else
-						vertices[pid] = { content: post.message || "", message: post.message || "", id: pid, type: "status" };
-					edges.push({source: "me", target: pid, type: "in_post"});
-				}
-
-				//create vertices from tags
-				var tags = isPhotos ? post.tags : post.with_tags;
-				for (var j = 0; j < (tags == undefined ? 0 : tags.data.length); j++) {
-					var uid = addUser(tags.data[j]);
-					edges.push({source: uid, target: pid, type: "in_post"});
-				}
-
-				//create vertices from likes
-				for (var j = 0; j < (post.likes == undefined ? 0 : post.likes.data.length); j++) {
-					var uid = addUser(post.likes.data[j]);
-					edges.push({source: uid, target: pid, type: "like"});
-				}
-
-				//create vertices from comments
-				for (var j = 0; j < (post.comments == undefined ? 0 : post.comments.data.length); j++) {
-					var uid = addUser(post.comments.data[j].from);
-					edges.push({source: uid, target: pid, type: "comment"});
-				}
-			}
-		});
-	}
-
-	function onLogIn() {
-		FB.api('/me?fields=id,name,picture', function(resp) {
-			console.log('Successful login for: ' + resp.name);
-			var uid = "u" + resp.id;
-			console.log(resp);
-			$("#fb-photo").attr("src", resp.picture.data.url);
-			$("#logged-in-user").text(resp.name);
-			vertices[uid] = { content: "<img src=\"" + resp.picture + "\" />", message: "me", id: uid, type: "user" };
-		});
-
-		FB.api('/1031068623608604/likes', function(resp) {
-			console.log(resp);
-		});
-
-		fetch(true);
-		fetch(false);
-	}
-</script>
-
 
 <div id="navbar" class="container">
 	<div id="navbar-content" class="content">
 		<a href="/"><h1>webb</h1></a>
-	</div>
-	<div id="navbar-right">
-		<p id="logged-in-user"></p>
-		<div id="image-container">
-			<img id="fb-photo">
+		<div id="navbar-right">
+			<p id="logged-in-user"></p>
+			<div id="image-container">
+				<img id="fb-photo" src="/images/user.png">
+			</div>
 		</div>
 	</div>
+</div>
+
+<link rel="stylesheet" type="text/css" href="/stylesheets/prompt.css" />
+<script src="/javascripts/prompt.js"></script>
+<div id="dimmer">
+    <div id="prompt-popup">
+        <h2 id="header-text"></h2>
+        <div id="message-text"></div>
+        <div id="button-container">
+            <button id="yes-button">yes</button>
+            <button id="no-button">no</button>
+            <button id="okay-button">okay</button>
+        </div>
+    </div>
 </div>
 
 <div class="body">
@@ -154,6 +51,26 @@
 	</div>
 </div>
 
+<!-- Button trigger modal
+<button type="button" class="btn btn-primary btn-lg hidden" data-toggle="modal" data-target="#myModal"></button>
 
+<!-- Modal
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+			</div>
+			<div class="modal-body">
+				...
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>-->
 </body>
 </html>

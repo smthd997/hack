@@ -61,3 +61,12 @@ h1, h2, p {
     float: left;
     margin: 4px 0;
 }
+#fb-photo {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    position: relative;
+    border-radius: 5px;
+    overflow: hidden;
+}
+}

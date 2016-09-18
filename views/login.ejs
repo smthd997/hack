@@ -5,53 +5,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <link rel='stylesheet' href='/stylesheets/shared.css' />
     <link rel='stylesheet' href='/stylesheets/login.css' />
+    <script>
+        var onConnectedFn = function() {
+            console.log("here");
+            //connected, redirect to main page
+            window.location = "/";
+        }
+    </script>
+    <script src="/javascripts/facebook.js" type="text/javascript"></script>
 </head>
 <body>
-    <script>
-        function statusChangeCallback(response) {
-            if (response.status === 'connected') {
-                //connected, redirect to main page
-                window.location = "/";
-                //onLogIn();
-            } else if (response.status === 'not_authorized') {
-                console.log('Please log into this app.')
-            } else {
-                console.log('Please log into Facebook.')
-            }
-        }
-
-        function checkLoginState() {
-            FB.getLoginStatus(function(response) {
-                statusChangeCallback(response);
-            });
-        }
-
-        window.fbAsyncInit = function() {
-            FB.init({
-                appId      : '1059613384157964',
-                cookie     : true,  // enable cookies to allow the server to access
-                                    // the session
-                xfbml      : true,  // parse social plugins on this page
-                version    : 'v2.5' // use graph api version 2.5
-            });
-
-            FB.logout(function(resp) {
-                FB.getLoginStatus(function(response) {
-                    statusChangeCallback(response);
-                });
-            });
-        };
-
-        // Load the SDK asynchronously
-        (function(d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s); js.id = id;
-            js.src = "//connect.facebook.net/en_US/sdk.js";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-    </script>
-
     <div id="navbar" class="container">
         <div id="navbar-content" class="content">
             <a href="/"><h1>webb</h1></a>
