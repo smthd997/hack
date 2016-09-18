@@ -7,6 +7,16 @@ function verticesDicToList(verticesDic) {
     return list;
 }
 
+function getDegree(id, edges) {
+    var count = 0;
+    for (var edge in edges) {
+        if(edges[edge].source == id || edges[edge].target == id) {
+            count += 1;
+        }
+    }
+    return count;
+}
+
 function makeD3Graph(div, width, height, verticesDict, edges) {
     var vertices = verticesDicToList(verticesDict);
 
@@ -34,6 +44,11 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
         .selectAll("g")
         .data(vertices)
         .enter().append("g")
+        .attr("fill-opacity", function(d) {
+            var degree = getDegree(d.id, edges);
+            degree *= 1.1;
+            return 1 - (1 / degree);
+        })
         .on("click", onClickBubble)
         .call(d3.drag()
             .on("start", function(d) {
