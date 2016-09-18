@@ -16,18 +16,10 @@ $(document).ready(function() {
     $("#no-button").click(function() {
        hidePrompt("no"); 
     });
-    $('circle.node').click(function (e) {
-        console.log('here');
-        e.stopPropagation();
-        e.preventDefault();
-        var id = $(this).id;
-        // var data = clickVertex(id, edges, vertices);
-        showPrompt('omg', 'omg', true, function(param){
-        });
-        console.log('here2');
-
-
-    });
+    $('circle').click(function(event){
+        event.stopPropagation();
+        var data = clickVertex($(this).data('id'), edges, vertices)
+    })
 });
 
 var onHidePrompt;

@@ -1,4 +1,7 @@
 function clickVertex(id, edgeList, verticesDict){
+    console.log(id);
+    console.log(edgeList);
+    console.log(verticesDict);
     var ret = {};
     var data = verticesDict[id];
     var numID = id.slice(1);

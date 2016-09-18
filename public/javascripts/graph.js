@@ -51,8 +51,7 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
                     simulation.alphaTarget(0);
                 d.fx = null;
                 d.fy = null;
-            }))
-        .on("click", function(d) { return d; });
+            }));
 
     edge.append("title")
         .text(function(d) { return d.id; });
