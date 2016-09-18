@@ -60,10 +60,10 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
         .attr("fill", "#fff").style("pointer-events", "none").attr("transform", "translate(-6,3)");
     var clips = vgs.append("clipPath").attr("id", function(d) { return "clip-path-" + d.id; }).append("circle").attr("r", 12);
     var img = vgs.append("image").attr("xlink:href", function(d) { return d.type == "photo" ? d.content : ""; })
-        .attr("x", "-12px")
-        .attr("y", "-12px")
-        .attr("width", function(d) { return d.type == "photo" ? "24px" : "0px"; })
-        .attr("height", function(d) { return d.type == "photo" ? "24px" : "0px"; })
+        .attr("x", "-14px")
+        .attr("y", "-14px")
+        .attr("width", function(d) { return d.type == "photo" ? "28px" : "0px"; })
+        .attr("height", function(d) { return d.type == "photo" ? "28px" : "0px"; })
         .attr("clip-path", function(d) { return "url(#clip-path-" + d.id; +")" });
 
     simulation
