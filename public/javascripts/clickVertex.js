@@ -49,18 +49,9 @@ function clickVertex(id, edgeList, verticesDict){
         }
         ret.edgeCount = typeEdgeCount;
     }
-    return parseClickResults(ret, id.slice(0,1) == 'u');
+    return ret;
 }
 
-function parseClickResults(input, userType){
-    var newRet = {};
-    if(userType == true){
-
-    }else{
-
-    }
-    return input;
-}
 
 console.log(clickVertex("p12", [{"source": "me", "target": "p12", "type": "in_post"}], {"p12": {"content": "<img src=\"[object Object]\" />", "message": "",
     "id": "p1306768812689838",

@@ -16,11 +16,23 @@ $(document).ready(function() {
     $("#no-button").click(function() {
        hidePrompt("no"); 
     });
+    $('circle.node').click(function (e) {
+        console.log('here');
+        e.stopPropagation();
+        e.preventDefault();
+        var id = $(this).id;
+        // var data = clickVertex(id, edges, vertices);
+        showPrompt('omg', 'omg', true, function(param){
+        });
+        console.log('here2');
+
+
+    });
 });
 
 var onHidePrompt;
 
-function showPrompt(header, message, isConfirm, callback) {
+function showPrompt(header, message, isConfirm) {
     $("#header-text").text(header);
     $("#message-text").html(message);
     if(isConfirm) {
@@ -30,12 +42,10 @@ function showPrompt(header, message, isConfirm, callback) {
         $("#yes-button, #no-button").removeClass("invisible");
         $("#okay-button").addClass("invisible");
     }
-    onHidePrompt = callback;
     $("#dimmer").stop();
     $("#dimmer").fadeIn(300);
 }
 
 function hidePrompt(param) {
     $("#dimmer").fadeOut(300);
-    onHidePrompt(param);
 }
