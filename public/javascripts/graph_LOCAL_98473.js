@@ -55,48 +55,7 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
                     simulation.alphaTarget(0);
                 d.fx = null;
                 d.fy = null;
-            }))
-        .on("click", function(d){
-            if(d.id.slice(0,1) != 'u'){
-                var ret = clickVertex(d.id, edges, verticesDict);
-                showPrompt(ret.title, ret.content, true);
-            }else{
-                ret = {};
-                var numID = d.id.slice(1);
-                FB.api('/'+numID+'/picture?type=large', function(response){
-                    console.log(response);
-                    ret.content = '<img src="'+response.data.url+'">';
-                    ret.title = verticesDict[d.id].message;
-                    var typeEdgeCount = {likePicture: 0, commentPicture: 0, taggedPicture: 0, likeStatus: 0, commentStatus: 0, taggedStatus: 0};
-                    for(var i=0; i<edges.length; i++){
-                        if(edges[i].source == d.id){
-                            if(edges[i].type == "in_post"){
-                                if(verticesDict[edges[i].target].message == "picture"){
-                                    typeEdgeCount.taggedPicture += 1;
-                                }else{
-                                    typeEdgeCount.taggedStatus += 1;
-                                }
-                            }else if(edges[i].type == "like"){
-                                if(verticesDict[edges[i].target].message == "picture"){
-                                    typeEdgeCount.likePicture += 1;
-                                }else{
-                                    typeEdgeCount.likeStatus += 1;
-                                }
-                            }else{
-                                if(verticesDict[edges[i].target].message == "picture"){
-                                    typeEdgeCount.commentPicture += 1;
-                                }else{
-                                    typeEdgeCount.commentStatus += 1;
-                                }
-                            }
-                        }
-                    }
-                    ret.edgeCount = typeEdgeCount;
-                    showPrompt(ret.title, ret.content, true);
-                });
-            }
-        });
-
+            }));
     var txt = vgs.append("text").text(function(d) { return d.type == "me" ? "me" : d.type == "status" ? "..." : ""; })
         .attr("fill", "#fff").style("pointer-events", "none").attr("transform", "translate(-6,3)");
     var img = vgs.append("image").attr("xlink:href", function(d) { return d.type == "photo" ? d.content : ""; })
@@ -104,7 +63,6 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
         .attr("y", "-12px")
         .attr("width", "24px")
         .attr("height", "24px");
-        //.append("img").attr("xlink:href", function(d) { return "@Url.Content(\"" + d.content + "\")"; });
 
     simulation
         .nodes(vertices)

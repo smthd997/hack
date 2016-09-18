@@ -55,8 +55,18 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
                     simulation.alphaTarget(0);
                 d.fx = null;
                 d.fy = null;
-            }))
-        .on("click", function(d){
+<<<<<<< HEAD
+            }));
+    var txt = vgs.append("text").text(function(d) { return d.type == "me" ? "me" : d.type == "status" ? "..." : ""; })
+        .attr("fill", "#fff").style("pointer-events", "none").attr("transform", "translate(-6,3)");
+    var img = vgs.append("image").attr("xlink:href", function(d) { return d.type == "photo" ? d.content : ""; })
+        .attr("x", "-12px")
+        .attr("y", "-12px")
+        .attr("width", "24px")
+        .attr("height", "24px");
+=======
+            })
+        ).on("click", function(d){
             if(d.id.slice(0,1) != 'u'){
                 var ret = clickVertex(d.id, edges, verticesDict);
                 showPrompt(ret.title, ret.content, true);
@@ -96,15 +106,11 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
                 });
             }
         });
-
-    var txt = vgs.append("text").text(function(d) { return d.type == "me" ? "me" : d.type == "status" ? "..." : ""; })
-        .attr("fill", "#fff").style("pointer-events", "none").attr("transform", "translate(-6,3)");
-    var img = vgs.append("image").attr("xlink:href", function(d) { return d.type == "photo" ? d.content : ""; })
-        .attr("x", "-12px")
-        .attr("y", "-12px")
-        .attr("width", "24px")
-        .attr("height", "24px");
         //.append("img").attr("xlink:href", function(d) { return "@Url.Content(\"" + d.content + "\")"; });
+
+    edge.append("title")
+        .text(function(d) { return d.id; });
+>>>>>>> 601b421a9ea4799b1b0bb598cf04d3fe55d67635
 
     simulation
         .nodes(vertices)
