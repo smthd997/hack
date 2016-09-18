@@ -1,7 +1,4 @@
 function clickVertex(id, edgeList, verticesDict){
-    console.log(id);
-    console.log(edgeList);
-    console.log(verticesDict);
     var ret = {};
     var data = verticesDict[id];
     var numID = id.slice(1);
@@ -58,8 +55,8 @@ function clickVertex(id, edgeList, verticesDict){
 }
 
 
-console.log(clickVertex("p12", [{"source": "me", "target": "p12", "type": "in_post"}], {"p12": {"content": "<img src=\"[object Object]\" />", "message": "",
+/*console.log(clickVertex("p12", [{"source": "me", "target": "p12", "type": "in_post"}], {"p12": {"content": "<img src=\"[object Object]\" />", "message": "",
     "id": "p1306768812689838",
     "type": "photo",
     "likes": 3,
-    "comments": 2}, "me": {"message": "Christopher Jacob Olson"}}));
+    "comments": 2}, "me": {"message": "Christopher Jacob Olson"}}));*/

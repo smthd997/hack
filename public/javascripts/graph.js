@@ -26,7 +26,7 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
         .enter().append("line")
         .attr("stroke", function(d) { return { "like": "#cc1111", "comment": "#1111cc", "in_post": "#11cc11" }[d.type]; })
         .attr("stroke-opacity", 0.3)
-        .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+        .attr("stroke-width", 1);
 
     var vgs = svg.append("g")
         .attr("class", "nodes")
@@ -35,7 +35,7 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
         .enter().append("g")
         .attr("fill-opacity", function(d) {
             var degree = getDegree(d.id, edges);
-            degree *= 1.1;
+            degree *= 1.4;
             return 1 - (1 / degree);
         })
         .on("click", onClickBubble)
@@ -58,17 +58,17 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
             }));
 
     var vertex = vgs.append("circle")
-        .attr("r", function(d) { return d.id == meId ? 30 : d.type == "user" ? 5 : 12; })
+        .attr("r", function(d) { return d.id == meId ? 30 : d.type == "user" ? 5 : 14; })
         .attr("fill", "#000")
         .attr("data-id", function(d) { return d.id; });
     var txt = vgs.append("text").text(function(d) { return d.type == "me" ? "me" : d.type == "status" ? "..." : ""; })
         .attr("fill", "#fff").style("pointer-events", "none").attr("transform", function(d){return d.type == "me" ? "translate(-9,3)" : d.type == "status" ? "translate(-6,3)": ""; });
-    var clips = vgs.append("clipPath").attr("id", function(d) { return "clip-path-" + d.id; }).append("circle").attr("r", 12);
+    var clips = vgs.append("clipPath").attr("id", function(d) { return "clip-path-" + d.id; }).append("circle").attr("r", 14);
     var img = vgs.append("image").attr("xlink:href", function(d) { return d.type == "photo" ? d.content : ""; })
-        .attr("x", "-14px")
-        .attr("y", "-14px")
-        .attr("width", function(d) { return d.type == "photo" ? "28px" : "0px"; })
-        .attr("height", function(d) { return d.type == "photo" ? "28px" : "0px"; })
+        .attr("x", "-16px")
+        .attr("y", "-16px")
+        .attr("width", function(d) { return d.type == "photo" ? "32px" : "0px"; })
+        .attr("height", function(d) { return d.type == "photo" ? "32px" : "0px"; })
         .attr("clip-path", function(d) { return "url(#clip-path-" + d.id; +")" });
 
     simulation
@@ -110,7 +110,6 @@ function getDegree(id, edges) {
     return count;
 }
 
-// i h8 javascript wtf is happening with my life
 function getDegree2(id, edges) {
     var count = 0;
     for (var i = 0; i<edges.length; i++) {

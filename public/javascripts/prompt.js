@@ -39,9 +39,7 @@ function showPrompt(content, caption, message, isConfirm, id) {
     if(isConfirm) {
         $("#yes-button, #no-button").addClass("invisible");
         $("#okay-button").removeClass("invisible");
-        console.log(id);
         $("#info-text").text(id);
-        console.log('set name')
     } else {
         $("#yes-button, #no-button").removeClass("invisible");
         $("#okay-button").addClass("invisible");

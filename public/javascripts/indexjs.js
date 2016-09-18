@@ -13,7 +13,7 @@ function addUser(user) {
 }
 
 function fetchData(callback) {
-    FB.api('/me?fields=photos.limit(50){id,name,picture,tags,likes.limit(100),comments.limit(100)},feed{id,message,type,with_tags,likes.limit(100),comments.limit(100)}', function(resp) {
+    FB.api('/me?fields=photos.limit(40){id,name,picture,tags,likes.limit(100),comments.limit(100)},feed{id,message,type,with_tags,likes.limit(100),comments.limit(100)}', function(resp) {
 
         process = function(data, isPhotos) {
             for (var i = 0; i < data.length; i++) {
@@ -118,7 +118,6 @@ var onClickBubble = function(d) {
                     }
                 }
             }
-            console.log(vertices[d.id].message == "me");
             if(vertices[d.id].message != "me") {
                 showPrompt(response.data.url, vertices[d.id].message, "Featured in " + tags + " of your posts, liked " + likes + " of your updates, and commented " + comments + " times on your happenings.", true, d.id);
             }else{
@@ -141,7 +140,6 @@ function getYouString(edges, vertices){
             }
         }
     }
-    console.log(degreeMap);
     var degrees = Object.keys(degreeMap);
     var count = 0;
     var influentialIds = [];
@@ -152,7 +150,6 @@ function getYouString(edges, vertices){
         influentialIds.push.apply(influentialIds, degreeMap[maxDegree]);
     }
     var ret = "Your most influential friends on social media are:";
-    console.log(influentialIds);
     for(var j=0; j < 5; j++){
         try {
             var data = vertices[influentialIds[j]].message;
