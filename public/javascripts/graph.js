@@ -34,7 +34,7 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
         .selectAll("circle")
         .data(vertices)
         .enter().append("circle")
-        .attr("r", function(d) { return d.id == meId ? "15" : d.type == "user" ? 5 : 10; })
+        .attr("r", function(d) { return d.id == meId ? 20 : d.type == "user" ? 5 : 10; })
         .call(d3.drag()
             .on("start", function(d) {
                 if (!d3.event.active)
