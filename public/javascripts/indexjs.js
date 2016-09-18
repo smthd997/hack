@@ -1,6 +1,8 @@
 var meId = "";
 var vertices = { };
 var edges = [];
+var currentEdges = edges;
+var currentVertices = vertices;
 
 function addUser(user) {
     var uid = "u" + user.id;
@@ -65,7 +67,7 @@ var onConnectedFn = function() {
         vertices[meId] = { content: "<img src=\"" + resp.picture + "\" />", message: "me", id: meId, type: "me" };
 
         fetchData(function() {
-            makeD3Graph("#graph", window.innerWidth, window.innerHeight, vertices, edges);
+            makeD3Graph("#graph", window.innerWidth, window.innerHeight, currentVertices, currentEdges);
         });
     });
 
@@ -95,10 +97,10 @@ var onClickBubble = function(d) {
                         }
                     }
                 }
-                showPrompt(response.data.url, vertices[d.id].message, d.likes + " people liked this and " + d.comments + " people were talking about this.", true, true);
+                showPrompt(response.data.url, vertices[d.id].message, d.likes + " people liked this and " + d.comments + " people were talking about this.", true, d.id);
             }}(d));
         else
-            showPrompt("", vertices[d.id].message, "", true);
+            showPrompt("", vertices[d.id].message, "", true, d.id);
     } else {
         var numID = d.id.slice(1);
         FB.api('/' + numID + '/picture?width=400', function(d) { return function(response) {
@@ -116,8 +118,53 @@ var onClickBubble = function(d) {
                     }
                 }
             }
-
-            showPrompt(response.data.url, vertices[d.id].message, "Featured in " + tags + " of your posts, liked " + likes + " of your updates, and commented " + comments + " times on your happenings.", true);
+            console.log(vertices[d.id].message == "me");
+            if(vertices[d.id].message != "me") {
+                showPrompt(response.data.url, vertices[d.id].message, "Featured in " + tags + " of your posts, liked " + likes + " of your updates, and commented " + comments + " times on your happenings.", true, d.id);
+            }else{
+                showPrompt(response.data.url, vertices[d.id].message, getYouString(edges, vertices), true, d.id);
+            }
         }}(d));
     }
 };
+
+function getYouString(edges, vertices){
+    var ids = Object.keys(vertices);
+    var degreeMap = {};
+    for(var i=1; i<ids.length; i++){
+        if(ids[i].slice(0,1) == 'u') {
+            var degree = getDegree2(ids[i], edges);
+            if (degree in degreeMap) {
+                degreeMap[degree].push(ids[i]);
+            } else {
+                degreeMap[degree] = [ids[i]];
+            }
+        }
+    }
+    console.log(degreeMap);
+    var degrees = Object.keys(degreeMap);
+    var count = 0;
+    var influentialIds = [];
+    while(count < 5 && degrees.length != 0){
+        var maxDegree = getMaxOfArray(degrees);
+        degrees.splice(degrees.indexOf(maxDegree), 1);
+        count += degreeMap[maxDegree].length;
+        influentialIds.push.apply(influentialIds, degreeMap[maxDegree]);
+    }
+    var ret = "Your most influential friends on social media are:";
+    console.log(influentialIds);
+    for(var j=0; j < 5; j++){
+        try {
+            var data = vertices[influentialIds[j]].message;
+            if(j == 4){
+                ret += ' and ' + data + '.';
+            }else {
+                ret += ' ' + data + ',';
+            }
+        }catch(e){j-=1}
+    }
+    return ret;
+}
+function getMaxOfArray(numArray) {
+    return Math.max.apply(null, numArray);
+}
