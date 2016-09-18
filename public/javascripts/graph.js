@@ -8,6 +8,7 @@ function verticesDicToList(verticesDic) {
 }
 
 function getDegree(id, edges) {
+    console.log(edges);
     var count = 0;
     for (var edge in edges) {
         if(edges[edge].source == id || edges[edge].target == id) {

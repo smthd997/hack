@@ -134,6 +134,7 @@ function getYouString(edges, vertices){
     for(var i=1; i<ids.length; i++){
         if(ids[i].slice(0,1) == 'u') {
             var degree = getDegree(ids[i], edges);
+            console.log(degree);
             if (degree in degreeMap) {
                 degreeMap[degree].push(ids[i]);
             } else {
@@ -141,6 +142,7 @@ function getYouString(edges, vertices){
             }
         }
     }
+    console.log(degreeMap);
     var degrees = Object.keys(degreeMap);
     var count = 0;
     var influentialIds = [];
@@ -160,7 +162,7 @@ function getYouString(edges, vertices){
             }else {
                 ret += ' ' + data + ',';
             }
-        }catch(e){}
+        }catch(e){j-=1}
     }
     return ret;
 }
