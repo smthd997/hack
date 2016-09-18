@@ -3050,7 +3050,7 @@ $(document).ready(function() {
         ]
     };
 
-    var graph = new d3Graph("#graph", 960, 600, vertices, edges);
+     //makeD3Graph("#graph", 960, 600, vertices, edges);
 
 
     //graph.loadGraph(a["nodes"], a.links);

@@ -9,8 +9,8 @@ function verticesDicToList(verticesDic) {
     return list;
 }
 
-var d3Graph = function(div, width, height, nodesDict, links) {
-    var nodes = verticesDicToList(nodesDict);
+function makeD3Graph(div, width, height, verticesDict, edges) {
+    var vertices = verticesDicToList(verticesDict);
     // Name of html selector for div
     var svg = d3.select(div).append("svg").attr("width", width).attr("height", height),
         width = +svg.attr("width"),
@@ -24,7 +24,7 @@ var d3Graph = function(div, width, height, nodesDict, links) {
     var edge = svg.append("g")
         .attr("class", "links")
         .selectAll("line")
-        .data(links)
+        .data(edges)
         .enter().append("line")
         .attr("stroke", "#000")
         .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
@@ -32,9 +32,9 @@ var d3Graph = function(div, width, height, nodesDict, links) {
     var vertex = svg.append("g")
         .attr("class", "nodes")
         .selectAll("circle")
-        .data(nodes)
+        .data(vertices)
         .enter().append("circle")
-        .attr("r", 5)
+        .attr("r", function(d) { return d.id == meId ? "15" : d.type == "user" ? 5 : 10; })
         .call(d3.drag()
             .on("start", function(d) {
                 if (!d3.event.active)
@@ -51,13 +51,14 @@ var d3Graph = function(div, width, height, nodesDict, links) {
                     simulation.alphaTarget(0);
                 d.fx = null;
                 d.fy = null;
-            }));
+            }))
+        .on("click", function(d) { return d; });
 
     edge.append("title")
         .text(function(d) { return d.id; });
 
     simulation
-        .nodes(nodes)
+        .nodes(vertices)
         .on("tick", function() {
             edge
                 .attr("x1", function(d) { return d.source.x; })
@@ -71,7 +72,7 @@ var d3Graph = function(div, width, height, nodesDict, links) {
         });
 
     simulation.force("link")
-        .links(links);
+        .links(edges);
 
     return;
 };
