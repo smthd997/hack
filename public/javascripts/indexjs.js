@@ -12,7 +12,8 @@ function addUser(user) {
     return uid;
 }
 
-function fetch(isPhotos) {
+function fetch(type) {
+    var isPhotos = type == "photos";
     FB.api(isPhotos ? '/me?fields=photos{id, name, picture, tags, likes, comments}' : '/me?fields=feed{id, message, type, with_tags, likes, comments}', function(resp) {
         var data = isPhotos ? resp.photos.data : resp.feed.data;
         for (var i = 0; i < data.length; i++) {
