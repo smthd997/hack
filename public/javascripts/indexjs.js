@@ -64,7 +64,7 @@ var onConnectedFn = function() {
         fetch(true);
         fetch(false);
 
-        console.log(edges);
+        console.log(vertices);
     });
 
     FB.api('/1031068623608604/likes', function(resp) {
