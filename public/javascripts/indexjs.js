@@ -27,7 +27,7 @@ function fetch(isPhotos) {
                     vertices[pid] = { content: "<img src=\"" + post.picture + "\" />", message: post.name || "", id: pid, type: "photo", likes: (post.likes == undefined ? 0 : post.likes.data.length), comments: (post.comments == undefined ? 0 : post.comments.data.length)};
                 else
                     vertices[pid] = { content: post.message || "", message: post.message || "", id: pid, type: "status" };
-                edges.push({source: "me", target: pid, type: "in_post"});
+                edges.push({source: meId, target: pid, type: "in_post"});
             }
 
             //create vertices from tags
@@ -55,17 +55,19 @@ function fetch(isPhotos) {
 var onConnectedFn = function() {
     FB.api('/me?fields=id,name,picture', function(resp) {
         console.log('Successful login for: ' + resp.name);
-        var uid = "u" + resp.id;
+        meId = "u" + resp.id;
         $("#fb-photo").attr("src", resp.picture.data.url);
         $("#logged-in-user").text(resp.name);
-        vertices[uid] = { content: "<img src=\"" + resp.picture + "\" />", message: "me", id: uid, type: "user" };
+        vertices[meId] = { content: "<img src=\"" + resp.picture + "\" />", message: "me", id: meId, type: "user" };
+
+        fetch(true);
+        fetch(false);
+
+        console.log(edges);
     });
 
     FB.api('/1031068623608604/likes', function(resp) {
     });
-
-    fetch(true);
-    fetch(false);
 }
 var onDisconnectedFn = function() {
     window.location = "/login";
