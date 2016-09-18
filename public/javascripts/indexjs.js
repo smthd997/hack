@@ -133,8 +133,7 @@ function getYouString(edges, vertices){
     var degreeMap = {};
     for(var i=1; i<ids.length; i++){
         if(ids[i].slice(0,1) == 'u') {
-            var degree = getDegree(ids[i], edges);
-            console.log(degree);
+            var degree = getDegree2(ids[i], edges);
             if (degree in degreeMap) {
                 degreeMap[degree].push(ids[i]);
             } else {

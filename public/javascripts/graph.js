@@ -7,17 +7,6 @@ function verticesDicToList(verticesDic) {
     return list;
 }
 
-function getDegree(id, edges) {
-    console.log(edges);
-    var count = 0;
-    for (var i = 0; i<edges.length; i++) {
-        if(edges[i].source == id || edges[i].target == id) {
-            count += 1;
-        }
-    }
-    return count;
-}
-
 function makeD3Graph(div, width, height, verticesDict, edges) {
     var vertices = verticesDicToList(verticesDict);
     // Name of html selector for div
@@ -110,3 +99,24 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
 
     return;
 };
+
+function getDegree(id, edges) {
+    var count = 0;
+    for (var i = 0; i<edges.length; i++) {
+        if(edges[i].source == id || edges[i].target == id) {
+            count += 1;
+        }
+    }
+    return count;
+}
+
+// i h8 javascript wtf is happening with my life
+function getDegree2(id, edges) {
+    var count = 0;
+    for (var i = 0; i<edges.length; i++) {
+        if(edges[i].source.id == id || edges[i].target.id == id) {
+            count += 1;
+        }
+    }
+    return count;
+}
