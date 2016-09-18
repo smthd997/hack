@@ -14,10 +14,6 @@ function addUser(user) {
 
 function fetchData(callback) {
     FB.api('/me?fields=photos.limit(40){id,name,picture,tags,likes.limit(100),comments.limit(100)},feed{id,message,type,with_tags,likes.limit(100),comments.limit(100)}', function(resp) {
-<<<<<<< HEAD
-
-=======
->>>>>>> 93eaf30732c8f128e3b22f949a9d9b6bcae7eabc
         process = function(data, isPhotos) {
             for (var i = 0; i < data.length; i++) {
                 var post = data[i];
