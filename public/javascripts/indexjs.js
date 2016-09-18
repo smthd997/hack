@@ -11,7 +11,7 @@ function addUser(user) {
 }
 
 function fetchData(callback) {
-    FB.api('/me?fields=photos.limit(40){id,name,picture,tags,likes.limit(100),comments.limit(100)},feed{id,message,type,with_tags,likes.limit(100),comments.limit(100)}', function(resp) {
+    FB.api('/me?fields=photos.limit(50){id,name,picture,tags,likes.limit(100),comments.limit(100)},feed{id,message,type,with_tags,likes.limit(100),comments.limit(100)}', function(resp) {
 
         process = function(data, isPhotos) {
             for (var i = 0; i < data.length; i++) {
