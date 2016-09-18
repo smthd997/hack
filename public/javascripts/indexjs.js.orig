@@ -1,6 +1,6 @@
-var meId = "";
-var vertices = { };
-var edges = [];
+meId = "";
+vertices = { };
+edges = [];
 
 function addUser(user) {
     var uid = "u" + user.id;
@@ -64,8 +64,9 @@ var onConnectedFn = function() {
         fetch(true);
         fetch(false);
 
+<<<<<<< HEAD
         console.log(vertices);
-        console.log(edges);
+=======
         var  v = {
             "u536623696543494": {
                 "content": "<img src=\"[object Object]\" />",
@@ -2780,6 +2781,7 @@ var onConnectedFn = function() {
         ];
 
         makeD3Graph("#graph", 960, 600, v, e);
+>>>>>>> 39108111a1c6645911fabd87c5afdcf82e98e3e8
     });
 
     FB.api('/1031068623608604/likes', function(resp) {

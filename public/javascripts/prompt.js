@@ -4,10 +4,10 @@ $(document).ready(function() {
     });
     
     //hide prompt on click
-    $(document).click(function() {
-        if ($("#dimmer").css("display") === "block")
-            hidePrompt("no");
-    });
+    // $(document).click(function() {
+    //     if ($("#dimmer").css("display") === "block")
+    //         hidePrompt("no");
+    // });
     
     //respond to prompt 
     $("#yes-button, #okay-button").click(function() {
@@ -16,17 +16,18 @@ $(document).ready(function() {
     $("#no-button").click(function() {
        hidePrompt("no"); 
     });
-    $('circle').click(function(event){
-        event.stopPropagation();
-        var data = clickVertex($(this).data('id'), edges, vertices)
+    $("circle").click(function(event){
+        console.log('here');
+        var data = clickVertex($(this).data('id'), edges, vertices);
+        showPrompt(data.title, data.content, false);
     })
 });
 
 var onHidePrompt;
 
 function showPrompt(header, message, isConfirm) {
-    $("#header-text").text(header);
-    $("#message-text").html(message);
+    $("#header-text").empty().text(header);
+    $("#message-text").empty().html(message);
     if(isConfirm) {
         $("#yes-button, #no-button").addClass("invisible");
         $("#okay-button").removeClass("invisible");
