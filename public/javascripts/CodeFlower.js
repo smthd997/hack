@@ -1,3 +1,11 @@
+/*
+ * Utilizes the CodeFlower library published under the MIT License. Built on top of library to
+ * cater to our requirements
+ *
+ * http://www.redotheweb.com/CodeFlower/
+ *
+ */
+
 var CodeFlower = function(selector, w, h) {
     console.log('Initializing code flower.');
 
@@ -28,6 +36,7 @@ var CodeFlower = function(selector, w, h) {
 };
 
 CodeFlower.prototype.update = function(json) {
+    console.log("Updating");
     if (json) this.json = json;
 
     this.json.fixed = true;
@@ -50,7 +59,8 @@ CodeFlower.prototype.update = function(json) {
 
     // Update the links
     this.link = this.svg.selectAll("line.link")
-        .data(links, function(d) { return d.target.name; });
+        .data(links, function(d) { return d.target.name; })
+        .attr("fill", "black");
 
     // Enter any new links
     this.link.enter().insert("svg:line", ".node")
@@ -58,7 +68,8 @@ CodeFlower.prototype.update = function(json) {
         .attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
+        .attr("y2", function(d) { return d.target.y; })
+        .style("stroke", "black");
 
     // Exit any old links.
     this.link.exit().remove();

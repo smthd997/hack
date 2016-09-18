@@ -1,7 +1,186 @@
-$(document).ready(function() {
-    console.log('graph.js loaded successfully.');
+function verticesDicToList(verticesDic) {
+    console.log("1");
+    var vertCopy = JSON.parse(JSON.stringify(verticesDic));
+    console.log(vertCopy);
+    var list = [];
+    for(var key in vertCopy) {
+        list.push(vertCopy[key]);
+    }
+    return list;
+}
 
-    var myFlower = new CodeFlower("#graph", 500, 500);
+var d3Graph = function(div, width, height, nodesDict, links) {
+    var nodes = verticesDicToList(nodesDict);
+    // Name of html selector for div
+    var svg = d3.select(div).append("svg").attr("width", width).attr("height", height),
+        width = +svg.attr("width"),
+        height = +svg.attr("height");
+
+    var simulation = d3.forceSimulation()
+        .force("link", d3.forceLink().id(function(d) { return d.id; }))
+        .force("charge", d3.forceManyBody())
+        .force("center", d3.forceCenter(width / 2, height / 2));
+
+    var link = svg.append("g")
+        .attr("class", "links")
+        .selectAll("line")
+        .data(links)
+        .enter().append("line")
+        .attr("stroke", "#000")
+        .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+
+    var node = svg.append("g")
+        .attr("class", "nodes")
+        .selectAll("circle")
+        .data(nodes)
+        .enter().append("circle")
+        .attr("r", 5)
+        .call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended));
+
+    node.append("title")
+        .text(function(d) { return d.id; });
+
+    simulation
+        .nodes(nodes)
+        .on("tick", ticked);
+
+    simulation.force("link")
+        .links(links);
+
+    function ticked() {
+        link
+            .attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+
+        node
+            .attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; });
+    }
+
+    function dragstarted(d) {
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(d) {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+    }
+
+    function dragended(d) {
+        if (!d3.event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+    return;
+
+    this.div = div;
+    this.width = width;
+    this.height = height;
+
+    d3.select(div).selectAll("svg").remove();
+
+    this.svg = d3.select(div).append("svg:svg")
+        .attr('width', this.width)
+        .attr('height', this.height);
+
+    this.svg.append("svg:rect")
+        .style("stroke", "#444")
+        .style("fill", "#fff")
+        .attr("width", width)
+        .attr("height", height);
+
+    this.simulation = d3.forceSimulation()
+        // checks links for source of vertex.id
+        .force("link", d3.forceLink().id(function (vertex) { return vertex.id; }))
+        .force("charge", d3.forceManyBody())
+        // makes center of screen center of force
+        .force("center", d3.forceCenter(width / 2, height / 2));
+};
+
+d3Graph.prototype.loadGraph = function(vertices, edges) {
+    this.vertices = verticesDicToList(vertices);
+    this.edges = edges;
+
+    console.log(this.vertices);
+    console.log(this.edges);
+
+    // Make sure to remove everything when loading graph again
+    //this.svg.selectAll("line").remove();
+    //this.svg.selectAll("circle").remove();
+
+    var simulation = this.simulation;
+
+    // Initializes an edge
+    var edge = this.svg.append("g")
+        .attr("class", "links")
+        .selectAll("line")
+        .data(this.edges)
+        .enter()
+        .append("line")
+        .attr("stroke", "black");
+
+    // Initializes vertex
+    var vertex = this.svg.append("g")
+        .attr("class", "nodes")
+        .selectAll("circle")
+        .data(this.vertices)
+        .enter().append("circle")
+        .attr("r", 100)// TODO: add callback for dynamic sizes
+        .attr("fill", "#ff00ff")// TODO: add callback for colors
+        .call(d3.drag()
+            .on("start", function(d) {
+                if(!d3.event.active) {
+                    simulation.alphaTarget(0.3).restart();
+                }
+                d.fx = d.x;
+                d.fy = d.y;
+            })
+            .on("drag", function(d) {
+                d.fx = d3.event.x;
+                d.fy = d3.event.y;
+            })
+            .on("end", function(d) {
+                if(!d3.event.active) {
+                    simulation.alphaTarget(0).restart();
+                }
+                d.fx = null;
+                d.fy = null;
+            }))
+        //.on("click", function() {})// TODO: add click functionality
+        .append("title")
+        .text(function(d) { return d.id; });
+
+    // Add force simulation to nodes
+    simulation
+        .nodes(this.vertices)
+        .on("tick", function() {
+            edge.attr("x1", function(d) { return d.source.x; })
+                .attr("y1", function(d) { return d.source.y; })
+                .attr("x2", function(d) { return d.target.x; })
+                .attr("y2", function(d) { return d.target.y; });
+
+            vertex.attr("cx", function(d) { return d.x })
+                .attr("cy", function(d) { return d.y });
+        });
+
+
+    simulation.force("link").links(this.edges);
+
+
+    return this;
+};
+
+
+// $(window).width(), $(window).height()-250
+    /*var myFlower = new CodeFlower("#graph",800,800);
     var json = {
         "name": "root",
         "children": [{
@@ -188,5 +367,4 @@ $(document).ready(function() {
         "nbFiles": 81,
         "size": 8778
     };
-    myFlower.update(json);
-});
+    myFlower.update(json);*/
