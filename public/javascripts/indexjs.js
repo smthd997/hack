@@ -1,6 +1,8 @@
 var meId = "";
 var vertices = { };
 var edges = [];
+var currentEdges = edges;
+var currentVertices = vertices;
 
 function addUser(user) {
     var uid = "u" + user.id;
@@ -65,7 +67,7 @@ var onConnectedFn = function() {
         vertices[meId] = { content: "<img src=\"" + resp.picture + "\" />", message: "me", id: meId, type: "me" };
 
         fetchData(function() {
-            makeD3Graph("#graph", window.innerWidth, window.innerHeight, vertices, edges);
+            makeD3Graph("#graph", window.innerWidth, window.innerHeight, currentVertices, currentEdges);
         });
     });
 
@@ -95,10 +97,10 @@ var onClickBubble = function(d) {
                         }
                     }
                 }
-                showPrompt(response.data.url, vertices[d.id].message, d.likes + " people liked this and " + d.comments + " people were talking about this.", true, true);
+                showPrompt(response.data.url, vertices[d.id].message, d.likes + " people liked this and " + d.comments + " people were talking about this.", true, d.id);
             }}(d));
         else
-            showPrompt("", vertices[d.id].message, "", true);
+            showPrompt("", vertices[d.id].message, "", true, d.id);
     } else {
         var numID = d.id.slice(1);
         FB.api('/' + numID + '/picture?width=400', function(d) { return function(response) {
@@ -117,7 +119,7 @@ var onClickBubble = function(d) {
                 }
             }
 
-            showPrompt(response.data.url, vertices[d.id].message, "Featured in " + tags + " of your posts, liked " + likes + " of your updates, and commented " + comments + " times on your happenings.", true);
+            showPrompt(response.data.url, vertices[d.id].message, "Featured in " + tags + " of your posts, liked " + likes + " of your updates, and commented " + comments + " times on your happenings.", true, d.id);
         }}(d));
     }
 };

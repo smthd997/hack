@@ -16,16 +16,22 @@ $(document).ready(function() {
     $("#no-button").click(function() {
        hidePrompt("no"); 
     });
-    $("circle").click(function(event){
-        console.log('here');
-        var data = clickVertex($(this).data('id'), edges, vertices);
-        showPrompt(data.title, data.content, false);
-    })
+    // $("#remove-button").click(function() {
+    //     hidePrompt("yes");
+    //     var id = $("#info-text").text();
+    //     console.log(id);
+    //     var newData = deleteInfo(id, currentEdges, currentVertices);
+    //     currentEdges = newData.edges;
+    //     currentVertices = newData.vertices;
+    //     console.log(currentEdges);
+    //     console.log(currentVertices);
+    //     makeD3Graph("#graph", window.innerWidth, window.innerHeight, currentVertices, currentEdges);
+    // });
 });
 
 var onHidePrompt;
 
-function showPrompt(content, caption, message, isConfirm) {
+function showPrompt(content, caption, message, isConfirm, id) {
     $("#popup-image").css("display", content == "" ? "none" : "block");
     $("#popup-image").attr("src", content);
     $("#header-text").empty().text(caption);
@@ -33,6 +39,9 @@ function showPrompt(content, caption, message, isConfirm) {
     if(isConfirm) {
         $("#yes-button, #no-button").addClass("invisible");
         $("#okay-button").removeClass("invisible");
+        console.log(id);
+        $("#info-text").text(id);
+        console.log('set name')
     } else {
         $("#yes-button, #no-button").removeClass("invisible");
         $("#okay-button").addClass("invisible");
