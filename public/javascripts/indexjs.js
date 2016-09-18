@@ -118,8 +118,52 @@ var onClickBubble = function(d) {
                     }
                 }
             }
-
-            showPrompt(response.data.url, vertices[d.id].message, "Featured in " + tags + " of your posts, liked " + likes + " of your updates, and commented " + comments + " times on your happenings.", true, d.id);
+            console.log(vertices[d.id].message == "me");
+            if(vertices[d.id].message != "me") {
+                showPrompt(response.data.url, vertices[d.id].message, "Featured in " + tags + " of your posts, liked " + likes + " of your updates, and commented " + comments + " times on your happenings.", true, d.id);
+            }else{
+                showPrompt(response.data.url, vertices[d.id].message, getYouString(edges, vertices), true, d.id);
+            }
         }}(d));
     }
 };
+
+function getYouString(edges, vertices){
+    var ids = Object.keys(vertices);
+    var degreeMap = {};
+    for(var i=1; i<ids.length; i++){
+        if(ids[i].slice(0,1) == 'u') {
+            var degree = getDegree(ids[i], edges);
+            if (degree in degreeMap) {
+                degreeMap[degree].push(ids[i]);
+            } else {
+                degreeMap[degree] = [ids[i]];
+            }
+        }
+    }
+    var degrees = Object.keys(degreeMap);
+    var count = 0;
+    var influentialIds = [];
+    while(count < 5 && degrees.length != 0){
+        var maxDegree = getMaxOfArray(degrees);
+        degrees.splice(degrees.indexOf(maxDegree), 1);
+        count += degreeMap[maxDegree].length;
+        influentialIds.push.apply(influentialIds, degreeMap[maxDegree]);
+    }
+    var ret = "Your most influential friends on social media are:";
+    console.log(influentialIds);
+    for(var j=0; j < 5; j++){
+        try {
+            var data = vertices[influentialIds[j]].message;
+            if(j == 4){
+                ret += ' and ' + data + '.';
+            }else {
+                ret += ' ' + data + ',';
+            }
+        }catch(e){}
+    }
+    return ret;
+}
+function getMaxOfArray(numArray) {
+    return Math.max.apply(null, numArray);
+}
