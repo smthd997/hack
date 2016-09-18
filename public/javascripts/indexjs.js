@@ -67,7 +67,7 @@ var onConnectedFn = function() {
         vertices[meId] = { content: "<img src=\"" + resp.picture + "\" />", message: "me", id: meId, type: "me" };
 
         fetchData(function() {
-            makeD3Graph("#graph", window.innerWidth, window.innerHeight, vertices, edges);
+            makeD3Graph("#graph", window.innerWidth, window.innerHeight, currentVertices, currentEdges);
         });
     });
 

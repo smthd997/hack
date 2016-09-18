@@ -1,9 +1,11 @@
 function deleteInfo(id, edgeList, verticesDict){
+    console.log(edgeList);
+    console.log(verticesDict);
     var newEdgeList = edgeList.slice();
     var newVerticesDict = $.extend(true, {}, verticesDict);
     var edgeListIndices = [];
     for(var i=0; i<edgeList.length; i++){
-        if(edgeList[i].source == id || edgeList[i].target == id){
+        if(edgeList[i].source.id == id || edgeList[i].target.id == id){
             edgeListIndices.push(i);
         }
     }

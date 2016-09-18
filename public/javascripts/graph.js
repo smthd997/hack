@@ -9,7 +9,6 @@ function verticesDicToList(verticesDic) {
 
 function makeD3Graph(div, width, height, verticesDict, edges) {
     var vertices = verticesDicToList(verticesDict);
-
     // Name of html selector for div
     var svg = d3.select(div).append("svg").attr("width", width).attr("height", height),
         width = +svg.attr("width"),
@@ -58,7 +57,7 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
         .attr("fill", "#000")
         .attr("data-id", function(d) { return d.id; });
     var txt = vgs.append("text").text(function(d) { return d.type == "me" ? "me" : d.type == "status" ? "..." : ""; })
-        .attr("fill", "#fff").style("pointer-events", "none").attr("transform", "translate(-6,3)");
+        .attr("fill", "#fff").style("pointer-events", "none").attr("transform", function(d){return d.type == "me" ? "translate(-9,3)" : d.type == "status" ? "translate(-6,3)": ""; });
     var clips = vgs.append("clipPath").attr("id", function(d) { return "clip-path-" + d.id; }).append("circle").attr("r", 12);
     var img = vgs.append("image").attr("xlink:href", function(d) { return d.type == "photo" ? d.content : ""; })
         .attr("x", "-14px")
