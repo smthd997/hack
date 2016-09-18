@@ -25,8 +25,10 @@ $(document).ready(function() {
 
 var onHidePrompt;
 
-function showPrompt(header, message, isConfirm) {
-    $("#header-text").empty().text(header);
+function showPrompt(content, caption, message, isConfirm) {
+    $("#popup-image").css("display", content == "" ? "none" : "block");
+    $("#popup-image").attr("src", content);
+    $("#header-text").empty().text(caption);
     $("#message-text").empty().html(message);
     if(isConfirm) {
         $("#yes-button, #no-button").addClass("invisible");

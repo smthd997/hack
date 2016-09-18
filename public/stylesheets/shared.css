@@ -69,4 +69,6 @@ h1, h2, p {
     border-radius: 5px;
     overflow: hidden;
 }
+#status-text {
+    font-size: 28px;
 }

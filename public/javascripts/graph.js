@@ -1,7 +1,5 @@
 function verticesDicToList(verticesDic) {
-    console.log("1");
     var vertCopy = JSON.parse(JSON.stringify(verticesDic));
-    console.log(vertCopy);
     var list = [];
     for(var key in vertCopy) {
         list.push(vertCopy[key]);
@@ -27,18 +25,16 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
         .selectAll("line")
         .data(edges)
         .enter().append("line")
-        .attr("stroke", "#000")
+        .attr("stroke", function(d) { return { "like": "#cc1111", "comment": "#1111cc", "in_post": "#11cc11" }[d.type]; })
+        .attr("stroke-opacity", 0.3)
         .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
 
     var vgs = svg.append("g")
         .attr("class", "nodes")
         .selectAll("g")
         .data(vertices)
-        .enter().append("g");
-
-    var vertex = vgs.append("circle")
-        .attr("r", function(d) { return d.id == meId ? 30 : d.type == "user" ? 5 : 10; })
-        .attr("data-id", function(d) { return d.id; })
+        .enter().append("g")
+        .on("click", onClickBubble)
         .call(d3.drag()
             .on("start", function(d) {
                 if (!d3.event.active)
@@ -55,56 +51,20 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
                     simulation.alphaTarget(0);
                 d.fx = null;
                 d.fy = null;
-            }))
-        .on("click", function(d){
-            if(d.id.slice(0,1) != 'u'){
-                var ret = clickVertex(d.id, edges, verticesDict);
-                showPrompt(ret.title, ret.content, true);
-            }else{
-                ret = {};
-                var numID = d.id.slice(1);
-                FB.api('/'+numID+'/picture?type=large', function(response){
-                    console.log(response);
-                    ret.content = '<img src="'+response.data.url+'">';
-                    ret.title = verticesDict[d.id].message;
-                    var typeEdgeCount = {likePicture: 0, commentPicture: 0, taggedPicture: 0, likeStatus: 0, commentStatus: 0, taggedStatus: 0};
-                    for(var i=0; i<edges.length; i++){
-                        if(edges[i].source == d.id){
-                            if(edges[i].type == "in_post"){
-                                if(verticesDict[edges[i].target].message == "picture"){
-                                    typeEdgeCount.taggedPicture += 1;
-                                }else{
-                                    typeEdgeCount.taggedStatus += 1;
-                                }
-                            }else if(edges[i].type == "like"){
-                                if(verticesDict[edges[i].target].message == "picture"){
-                                    typeEdgeCount.likePicture += 1;
-                                }else{
-                                    typeEdgeCount.likeStatus += 1;
-                                }
-                            }else{
-                                if(verticesDict[edges[i].target].message == "picture"){
-                                    typeEdgeCount.commentPicture += 1;
-                                }else{
-                                    typeEdgeCount.commentStatus += 1;
-                                }
-                            }
-                        }
-                    }
-                    ret.edgeCount = typeEdgeCount;
-                    showPrompt(ret.title, ret.content, true);
-                });
-            }
-        });
+            }));
 
+    var vertex = vgs.append("circle")
+        .attr("r", function(d) { return d.id == meId ? 30 : d.type == "user" ? 5 : 12; })
+        .attr("data-id", function(d) { return d.id; });
     var txt = vgs.append("text").text(function(d) { return d.type == "me" ? "me" : d.type == "status" ? "..." : ""; })
         .attr("fill", "#fff").style("pointer-events", "none").attr("transform", "translate(-6,3)");
+    var clips = vgs.append("clipPath").attr("id", function(d) { return "clip-path-" + d.id; }).append("circle").attr("r", 12);
     var img = vgs.append("image").attr("xlink:href", function(d) { return d.type == "photo" ? d.content : ""; })
         .attr("x", "-12px")
         .attr("y", "-12px")
-        .attr("width", "24px")
-        .attr("height", "24px");
-        //.append("img").attr("xlink:href", function(d) { return "@Url.Content(\"" + d.content + "\")"; });
+        .attr("width", function(d) { return d.type == "photo" ? "24px" : "0px"; })
+        .attr("height", function(d) { return d.type == "photo" ? "24px" : "0px"; })
+        .attr("clip-path", function(d) { return "url(#clip-path-" + d.id; +")" });
 
     simulation
         .nodes(vertices)
@@ -116,6 +76,9 @@ function makeD3Graph(div, width, height, verticesDict, edges) {
                 .attr("y2", function(d) { return d.target.y; });
 
             vertex
+                .attr("cx", function(d) { return d.x; })
+                .attr("cy", function(d) { return d.y; });
+            clips
                 .attr("cx", function(d) { return d.x; })
                 .attr("cy", function(d) { return d.y; });
             txt
