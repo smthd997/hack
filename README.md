@@ -1,8 +1,7 @@
-### README
 
-## HackMIT team
+# HackMIT
 
-# Dependencies
+## Dependencies
 
   -Node.js
   
